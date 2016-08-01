@@ -107,7 +107,7 @@ def searchPokemon(session):
                 pokemon.longitude
             )
 
-            rarity = pokedex.getRarityById(pokemonId)
+            rarity = pokedex.getRarityJpById(pokemonId)
             # Greedy for rarest
             if rarity > best:
                 pokemonBest = pokemon
@@ -140,10 +140,10 @@ def searchPokemon(session):
                 fort.longitude
             )
 
-            rarity = pokedex.getRarityById(pokemonId)
+            rarity = pokedex.getRarityJpById(pokemonId)
 
             fort_name = 'Far...'
-            if( dist < 150.0 ):
+            if dist < 150.0 or rarity >= 3:
                 fort_name = session.getFortDetails(fort).name
 
             # Log the pokemon found

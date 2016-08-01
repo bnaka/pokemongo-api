@@ -162,6 +162,7 @@ class Pokedex(dict):
     evolves = {}
 
     jp = {}
+    rarity_jp = {}
 
     def __init__(self):
         super(dict, self).__init__(self)
@@ -406,6 +407,53 @@ class Pokedex(dict):
             self.MEWTWO:u"ミュウツー",
             self.MEW:u"ミュウ",
         }
+        self.rarity_jp[Rarity.MYTHIC] = [self.MEW]
+        self.rarity_jp[Rarity.LEGENDARY] = [
+            self.ZAPDOS, self.MOLTRES, self.MEWTWO, self.ARTICUNO
+        ]
+        self.rarity_jp[Rarity.EPIC] = [
+                self.LAPRAS, self.CHANSEY, self.AERODACTYL, self.CHARIZARD, self.BLASTOISE, 
+                self.DRAGONITE, self.OMASTAR, self.KABUTOPS, self.GYARADOS, self.MACHAMP, 
+                self.GENGAR, self.GOLEM, self.ALAKAZAM, 
+        ]
+        self.rarity_jp[Rarity.VERY_RARE] = [
+                self.SNORLAX, self.PORYGON, self.HITMONLEE, self.VENUSAUR, self.MAGNETON, 
+                self.ARCANINE, self.MAROWAK, self.NINETALES, self.RAPIDASH, self.GRAVELER, 
+                self.MACHOKE, self.PERSIAN, self.RHYDON, self.VILEPLUME, self.RAICHU, 
+                self.ELECTRODE, self.DUGTRIO, self.MUK, self.CLOYSTER, self.DEWGONG, 
+                self.PRIMEAPE, self.NIDOKING, self.CHARMELEON, self.HITMONCHAN, self.ELECTABUZZ, 
+                self.OMANYTE, self.KABUTO, self.JYNX, self.LICKITUNG, self.DRAGONAIR, 
+                self.WARTORTLE, self.VICTREEBEL, self.WEEZING, self.NIDOQUEEN, self.HAUNTER, 
+                self.CLEFABLE, self.WIGGLYTUFF, self.KADABRA, self.HYPNO, self.VAPOREON, 
+                self.JOLTEON, self.FLAREON, self.SANDSLASH, self.POLIWRATH, self.EXEGGUTOR, 
+                self.PIKACHU, self.CHARMANDER, self.MAGMAR, self.ONIX, self.RHYDON, 
+                self.SEEL, self.MANKEY, self.DIGLETT, self.SHELLDER, self.MACHOP, 
+                self.CUBONE, self.BUTTERFREE, self.NIDORINO, self.NIDORINA, self.SEADRA, 
+                self.BEEDRILL, self.STARMIE, self.VENOMOTH, 
+        ]
+        self.rarity_jp[Rarity.RARE] = [
+                self.VULPIX, self.PONYTA, self.GROWLITHE, self.GEODUDE, self.FARFETCHD, 
+                self.GRIMER, self.ABRA, self.DROWZEE, self.VOLTORB, self.MAGNEMITE, 
+                self.PIDGEOT, self.IVYSAUR, self.SLOWBRO, self.GLOOM, 
+        ]
+        self.rarity_jp[Rarity.UNCOMMON] = [
+                self.SQUIRTLE, self.MEOWTH, self.GASTLY, self.DRATINI, self.KOFFING, 
+                self.SCYTHER, self.SANDSHREW, self.CLEFAIRY, self.JIGGLYPUFF, self.KINGLER, 
+                self.FEAROW, self.TENTACRUEL, self.WEEPINBELL, self.ARBOK, self.PARASECT, 
+                self.GOLDUCK, self.SEAKING, self.POLIWHIRL, 
+        ]
+        self.rarity_jp[Rarity.COMMON] = [
+                self.BULBASAUR, self.EKANS, self.EEVEE, self.NIDORAN_FEMALE, self.NIDORAN_MALE, 
+                self.STARYU, self.TANGELA, self.PINSIR, self.EXEGGCUTE, self.RATICATE, 
+                self.GOLBAT, self.PIDGEOTTO, self.KAKUNA, self.METAPOD, self.DODRIO, 
+                
+        ]
+        self.rarity_jp[Rarity.CRITTER] = [
+                self.SPEAROW, self.KRABBY, self.VENONAT, self.PSYDUCK, self.GOLDEEN, 
+                self.ODDISH, self.POLIWAG, self.PARAS, self.BELLSPROUT, self.SLOWPOKE, 
+                self.CATERPIE, self.RATTATA, self.MAGIKARP, self.ZUBAT, self.DODUO, 
+                self.WEEDLE, self.PIDGEY, 
+        ]
 
     def getRarityByName(self, name):
         return self.RarityById(self[name])
@@ -414,6 +462,12 @@ class Pokedex(dict):
         for rarity in self.rarity:
             if pokemonId in self.rarity[rarity]:
                 return rarity
+
+    def getRarityJpById(self, pokemonId):
+        for rarity in self.rarity_jp:
+            if pokemonId in self.rarity_jp[rarity]:
+                return rarity
+
 
 class Rarity(object):
     CRITTER = 0

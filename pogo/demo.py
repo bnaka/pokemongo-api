@@ -82,9 +82,11 @@ def findBestPokemon(session):
 
 # Grab the nearest pokemon details
 def searchPokemon(session):
+    now = time.time() * 1000
+
     # Get Map details and print pokemon
     logging.info("Searching Nearby Pokemon:")
-    cells = session.getMapObjects()
+    cells = session.getMapObjects(radius=20)
     closest = float("Inf")
     best = -1
     pokemonBest = None
@@ -126,6 +128,7 @@ def searchPokemon(session):
                 pokemon.longitude,
                 rarity
             ))
+            print(pokemon)
         # fort lure pokemon
         for fort in cell.forts:
             lure_info = getattr(fort, "lure_info", None)
@@ -147,15 +150,15 @@ def searchPokemon(session):
                 fort_name = session.getFortDetails(fort).name
 
             # Log the pokemon found
-            logging.info("%s, %f meters away(of %f, %f). rarity %s. by fort \"%s\"" % (
+            logging.info("%s, %f meters away(of %f, %f). rarity %s. by fort \"%s\". remain %f." % (
                 pokedex.jp[pokemonId],
                 dist,
                 fort.latitude,
                 fort.longitude,
                 rarity,
-                fort_name
+                fort_name,
+				(lure_info.lure_expires_timestamp_ms - now) / 60000
             ))
-
 
 
 # Wrap both for ease

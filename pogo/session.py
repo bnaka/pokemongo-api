@@ -260,8 +260,6 @@ class PogoSession(object):
         if len(self._state.mapObjects.map_cells) > 0:
             return self._state.mapObjects;
 
-        logging.info("getMapObjects")
-
         # Work out location details
         cells = self.location.getCells(radius)
         latitude, longitude, _ = self.getCoordinates()

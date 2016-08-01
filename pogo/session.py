@@ -256,6 +256,12 @@ class PogoSession(object):
 
     # Get Location
     def getMapObjects(self, radius=10):
+
+        if len(self._state.mapObjects.map_cells) > 0:
+            return self._state.mapObjects;
+
+        logging.info("getMapObjects")
+
         # Work out location details
         cells = self.location.getCells(radius)
         latitude, longitude, _ = self.getCoordinates()

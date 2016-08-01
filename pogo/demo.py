@@ -80,6 +80,84 @@ def findBestPokemon(session):
     return pokemonBest
 
 
+# Grab the nearest pokemon details
+def searchPokemon(session):
+    # Get Map details and print pokemon
+    logging.info("Searching Nearby Pokemon:")
+    cells = session.getMapObjects()
+    closest = float("Inf")
+    best = -1
+    pokemonBest = None
+    latitude, longitude, _ = session.getCoordinates()
+    logging.info("Current pos: %f, %f" % (latitude, longitude))
+    for cell in cells.map_cells:
+        # Heap in pokemon protos where we have long + lat
+        pokemons = [p for p in cell.wild_pokemons] + [p for p in cell.catchable_pokemons]
+        for pokemon in pokemons:
+            # Normalize the ID from different protos
+            pokemonId = getattr(pokemon, "pokemon_id", None)
+            if not pokemonId:
+                pokemonId = pokemon.pokemon_data.pokemon_id
+
+            # Find distance to pokemon
+            dist = Location.getDistance(
+                latitude,
+                longitude,
+                pokemon.latitude,
+                pokemon.longitude
+            )
+
+            rarity = pokedex.getRarityById(pokemonId)
+            # Greedy for rarest
+            if rarity > best:
+                pokemonBest = pokemon
+                best = rarity
+                closest = dist
+            # Greedy for closest of same rarity
+            elif rarity == best and dist < closest:
+                pokemonBest = pokemon
+                closest = dist
+
+            # Log the pokemon found
+            logging.info("%s, %f meters away(of %f, %f). rarity %s" % (
+                pokedex.jp[pokemonId],
+                dist,
+                pokemon.latitude,
+                pokemon.longitude,
+                rarity
+            ))
+        # fort lure pokemon
+        for fort in cell.forts:
+            lure_info = getattr(fort, "lure_info", None)
+            pokemonId = lure_info.active_pokemon_id;
+            if not pokemonId:
+                continue
+
+            dist = Location.getDistance(
+                latitude,
+                longitude,
+                fort.latitude,
+                fort.longitude
+            )
+
+            rarity = pokedex.getRarityById(pokemonId)
+
+            fort_name = 'Far...'
+            if( dist < 150.0 ):
+                fort_name = session.getFortDetails(fort).name
+
+            # Log the pokemon found
+            logging.info("%s, %f meters away(of %f, %f). rarity %s. by fort \"%s\"" % (
+                pokedex.jp[pokemonId],
+                dist,
+                fort.latitude,
+                fort.longitude,
+                rarity,
+                fort_name
+            ))
+
+
+
 # Wrap both for ease
 def encounterAndCatch(session, pokemon, thresholdP=0.5, limit=5, delay=2):
     # Start encounter
@@ -193,7 +271,10 @@ def sortCloseForts(session):
 def findClosestFort(session):
     # Find nearest fort (pokestop)
     logging.info("Finding Nearest Fort:")
-    return sortCloseForts(session)[0]
+    forts = sortCloseForts(session)
+    if len(forts) > 0:
+        return forts[0]
+    return None
 
 
 # Walk to fort and spin
@@ -390,18 +471,19 @@ if __name__ == '__main__':
     if session:
 
         # General
-        getProfile(session)
-        getInventory(session)
+        #getProfile(session)
+        #getInventory(session)
 
         # Things we need GPS for
         if args.location:
             # Pokemon related
-            pokemon = findBestPokemon(session)
-            walkAndCatch(session, pokemon)
+            #pokemon = findBestPokemon(session)
+            #walkAndCatch(session, pokemon)
+            searchPokemon(session)
 
             # Pokestop related
-            fort = findClosestFort(session)
-            walkAndSpin(session, fort)
+            #fort = findClosestFort(session)
+            #walkAndSpin(session, fort)
 
         # see simpleBot() for logical usecases
         # eg. simpleBot(session)

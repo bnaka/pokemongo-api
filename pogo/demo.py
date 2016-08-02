@@ -86,7 +86,7 @@ def searchPokemon(session):
 
     # Get Map details and print pokemon
     logging.info("Searching Nearby Pokemon:")
-    cells = session.getMapObjects(radius=20)
+    cells = session.getMapObjects(radius=10)
     closest = float("Inf")
     best = -1
     pokemonBest = None
@@ -120,15 +120,22 @@ def searchPokemon(session):
                 pokemonBest = pokemon
                 closest = dist
 
+            if rarity >= 2:
+                logging.info("!!!!!!!!!!! rarity %s !!!!!!!!!!", rarity)
+
+            remain = getattr(pokemon, 'time_till_hidden_ms', None)
+            if not remain:
+                remain = pokemon.expiration_timestamp_ms - now
+
             # Log the pokemon found
-            logging.info("%s, %f meters away(of %f, %f). rarity %s" % (
+            logging.info("%s, %f meters away(of %f, %f). rarity %s. remain %f." % (
                 pokedex.jp[pokemonId],
                 dist,
                 pokemon.latitude,
                 pokemon.longitude,
-                rarity
+                rarity,
+                remain / 60000
             ))
-            print(pokemon)
         # fort lure pokemon
         for fort in cell.forts:
             lure_info = getattr(fort, "lure_info", None)
@@ -145,9 +152,18 @@ def searchPokemon(session):
 
             rarity = pokedex.getRarityJpById(pokemonId)
 
+            if rarity >= 2:
+                logging.info("!!!!!!!!!!! rarity %s !!!!!!!!!!", rarity)
+
+            remain = lure_info.lure_expires_timestamp_ms - now
+
             fort_name = 'Far...'
             if dist < 150.0 or rarity >= 3:
                 fort_name = session.getFortDetails(fort).name
+
+                sec = remain / 1000
+                if sec < session.watch_sec:
+                    session.watch_sec = sec + 5
 
             # Log the pokemon found
             logging.info("%s, %f meters away(of %f, %f). rarity %s. by fort \"%s\". remain %f." % (
@@ -157,7 +173,7 @@ def searchPokemon(session):
                 fort.longitude,
                 rarity,
                 fort_name,
-				(lure_info.lure_expires_timestamp_ms - now) / 60000
+                remain / 60000
             ))
 
 
@@ -447,6 +463,7 @@ if __name__ == '__main__':
     parser.add_argument("-p", "--password", help="Password", required=True)
     parser.add_argument("-l", "--location", help="Location")
     parser.add_argument("-g", "--geo_key", help="GEO API Secret")
+    parser.add_argument("-w", "--watch", help="watch flag", type=int)
     args = parser.parse_args()
 
     # Check service
@@ -482,7 +499,17 @@ if __name__ == '__main__':
             # Pokemon related
             #pokemon = findBestPokemon(session)
             #walkAndCatch(session, pokemon)
-            searchPokemon(session)
+            cnt = 0
+            while True:
+                searchPokemon(session)
+
+                cnt += 1
+                if cnt > args.watch:
+                    break
+
+                logging.info("watch %d > %d. sleep... %d" % (cnt, args.watch, session.watch_sec))
+                time.sleep(session.watch_sec)
+                session.watch_sec = 120
 
             # Pokestop related
             #fort = findClosestFort(session)

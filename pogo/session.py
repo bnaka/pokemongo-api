@@ -61,6 +61,8 @@ class PogoSession(object):
         # Set up Inventory
         self.getInventory()
 
+        self.watch_sec = 120
+
     def __str__(self):
         s = 'Access Token: {0}\nEndpoint: {1}\nLocation: {2}'.format(
             self.accessToken,
@@ -257,8 +259,8 @@ class PogoSession(object):
     # Get Location
     def getMapObjects(self, radius=10):
 
-        if len(self._state.mapObjects.map_cells) > 0:
-            return self._state.mapObjects;
+        # if len(self._state.mapObjects.map_cells) > 0:
+        #     return self._state.mapObjects;
 
         # Work out location details
         cells = self.location.getCells(radius)

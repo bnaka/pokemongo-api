@@ -9,6 +9,7 @@ from api import PokeAuthSession
 from location import Location
 
 from pokedex import pokedex
+from fortdex import fortdex
 from inventory import items
 
 def setupLogger():
@@ -158,8 +159,10 @@ def searchPokemon(session):
             remain = lure_info.lure_expires_timestamp_ms - now
 
             fort_name = 'Far...'
-            if dist < 150.0 or rarity >= 3:
-                fort_name = session.getFortDetails(fort).name
+            if dist < 300.0 or rarity >= 2:
+                fort_name = fortdex.names[fort.id]
+                if not fort_name: 
+                    fort_name = session.getFortDetails(fort).name
 
                 sec = remain / 1000
                 if sec < session.watch_sec:

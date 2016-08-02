@@ -87,7 +87,7 @@ def searchPokemon(session):
 
     # Get Map details and print pokemon
     logging.info("Searching Nearby Pokemon:")
-    cells = session.getMapObjects(radius=5)
+    cells = session.getMapObjects()
     closest = float("Inf")
     best = -1
     pokemonBest = None
@@ -122,7 +122,7 @@ def searchPokemon(session):
                 closest = dist
 
             if rarity >= 2:
-                for i in range(2, rarity):
+                for i in range(2, rarity+1):
                     logging.info("!!!!!!!!!!!!!! rarity %s !!!!!!!!!!!!!", rarity)
 
             remain = getattr(pokemon, 'time_till_hidden_ms', None)
@@ -155,7 +155,8 @@ def searchPokemon(session):
             rarity = pokedex.getRarityJpById(pokemonId)
 
             if rarity >= 2:
-                logging.info("!!!!!!!!!!! rarity %s !!!!!!!!!!", rarity)
+                for i in range(2, rarity+1):
+                    logging.info("!!!!!!!!!!!!!! rarity %s !!!!!!!!!!!!!", rarity)
 
             remain = lure_info.lure_expires_timestamp_ms - now
 
@@ -518,7 +519,7 @@ if __name__ == '__main__':
                 elif session.watch_sec < 60:
                     session.watch_sec += 30 
 
-                logging.info("watch %d > %d. sleep... %d" % (cnt, args.watch, session.watch_sec))
+                logging.info("watch %d > %d. sleep... %d\n" % (cnt, args.watch, session.watch_sec))
                 time.sleep(session.watch_sec)
                 session.watch_sec = 120
 

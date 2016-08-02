@@ -434,19 +434,18 @@ class Pokedex(dict):
         self.rarity_jp[Rarity.RARE] = [
                 self.VULPIX, self.PONYTA, self.GROWLITHE, self.GEODUDE, self.FARFETCHD, 
                 self.GRIMER, self.ABRA, self.DROWZEE, self.VOLTORB, self.MAGNEMITE, 
-                self.PIDGEOT, self.IVYSAUR, self.SLOWBRO, self.GLOOM, 
+                self.IVYSAUR, self.SLOWBRO, self.GLOOM, 
         ]
         self.rarity_jp[Rarity.UNCOMMON] = [
                 self.SQUIRTLE, self.MEOWTH, self.GASTLY, self.DRATINI, self.KOFFING, 
                 self.SCYTHER, self.SANDSHREW, self.CLEFAIRY, self.JIGGLYPUFF, self.KINGLER, 
                 self.FEAROW, self.TENTACRUEL, self.WEEPINBELL, self.ARBOK, self.PARASECT, 
-                self.GOLDUCK, self.SEAKING, self.POLIWHIRL, 
+                self.GOLDUCK, self.SEAKING, self.POLIWHIRL, self.PIDGEOT,
         ]
         self.rarity_jp[Rarity.COMMON] = [
                 self.BULBASAUR, self.EKANS, self.EEVEE, self.NIDORAN_FEMALE, self.NIDORAN_MALE, 
                 self.STARYU, self.TANGELA, self.PINSIR, self.EXEGGCUTE, self.RATICATE, 
                 self.GOLBAT, self.PIDGEOTTO, self.KAKUNA, self.METAPOD, self.DODRIO, 
-                
         ]
         self.rarity_jp[Rarity.CRITTER] = [
                 self.SPEAROW, self.KRABBY, self.VENONAT, self.PSYDUCK, self.GOLDEEN, 

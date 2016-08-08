@@ -160,6 +160,7 @@ class Pokedex(dict):
 
     rarity = {}
     evolves = {}
+    candy_type ={}
 
     jp = {}
     rarity_jp = {}
@@ -253,6 +254,7 @@ class Pokedex(dict):
             self.ZAPDOS: 0, self.MOLTRES: 0, self.DRATINI: 25, self.DRAGONAIR: 100, self.DRAGONITE: 0,
             self.MEWTWO: 0, self.MEW: 0
         }
+
         self.jp = {
             self.MISSINGNO:u"不明",
             self.BULBASAUR:u"フシギダネ",
@@ -453,6 +455,12 @@ class Pokedex(dict):
                 self.CATERPIE, self.RATTATA, self.MAGIKARP, self.ZUBAT, self.DODUO, 
                 self.WEEDLE, self.PIDGEY, 
         ]
+        
+        candy = None
+        for pokemon_id in range(1, len(self)):
+            if self.evolves[pokemon_id-1] == 0:
+                candy = self[pokemon_id]
+            self.candy_type[self[pokemon_id]] = candy
 
     def getRarityByName(self, name):
         return self.RarityById(self[name])

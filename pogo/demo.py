@@ -169,7 +169,7 @@ def searchPokemon(session):
             if dist < 150.0:
                 sec = remain / 1000
                 if sec < session.watch_sec:
-                    session.watch_sec = sec + 5
+                    session.watch_sec = int(sec + 5)
 
             # Log the pokemon found
             logging.info("%s, %f meters away(of %f, %f). rarity %s. by fort \"%s\". remain %f." % (
@@ -455,6 +455,11 @@ def simpleBot(session):
             time.sleep(cooldown)
             cooldown *= 2
 
+def sleeprint(count):
+    for i in range(count, 0, -1):
+        sys.stdout.write("\r%d" % i)
+        sys.stdout.flush()
+        time.sleep(1)
 
 # Entry point
 # Start off authentication and demo
@@ -507,21 +512,28 @@ if __name__ == '__main__':
             #walkAndCatch(session, pokemon)
             cnt = 0
             while True:
-                searchPokemon(session)
+                try:
+                    searchPokemon(session)
 
-                cnt += 1
-                if cnt > args.watch:
-                    break
+                    cnt += 1
+                    if cnt > args.watch:
+                        break
 
-                # safe 1 minuts
-                if session.watch_sec < 30:
-                    session.watch_sec += 60 
-                elif session.watch_sec < 60:
-                    session.watch_sec += 30 
+                    # safe 1 minuts
+                    if session.watch_sec < 30:
+                        session.watch_sec += 60 
+                    elif session.watch_sec < 60:
+                        session.watch_sec += 30 
 
-                logging.info("watch %d > %d. sleep... %d\n" % (cnt, args.watch, session.watch_sec))
-                time.sleep(session.watch_sec)
-                session.watch_sec = 120
+                    logging.info("watch %d > %d. sleep... %d\n" % (cnt, args.watch, session.watch_sec))
+                    sleeprint(session.watch_sec)
+                    # time.sleep(session.watch_sec)
+                    session.watch_sec = 120
+
+                except Exception as e:
+                    logging.critical('Exception raised: %s', e)
+                    session = poko_session.reauthenticate(session)
+                    time.sleep(10)
 
             # Pokestop related
             #fort = findClosestFort(session)
